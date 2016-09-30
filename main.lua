@@ -3,6 +3,7 @@ require "objects"
 require "mainMenu"
 require "gameMenu"
 require "options"
+require "controls"
 
 gamestate = "mainMenu"
 
@@ -15,8 +16,9 @@ function love.load()
 	options.load()
 	mainMenu.load()
 	gameMenu.load()
-	players.load(0)
+	players.load(2)
 	objects.load()
+	controls.load()
 end
 
 function love.update(dt)
@@ -32,6 +34,8 @@ function love.update(dt)
 		gameMenu.update(dt)
 	elseif gamestate == "options" then
 		options.update(dt)
+	elseif gamestate == "controls" then
+		controls.update(dt)
 	end
 end
 
@@ -49,6 +53,8 @@ function love.mousepressed(x, y, button)
 		gameMenu.mousepressed(x, y, button)
 	elseif gamestate == "options" then
 		options.mousepressed(x, y, button)
+	elseif gamestate == "controls" then
+		controls.mousepressed(x, y, button)
 	end
 end
 
@@ -61,6 +67,10 @@ function love.keypressed(button)
 		elseif gamestate == "game" then
 			gamestate = "gameMenu"
 		end
+	end
+
+	if gamestate == "controls" then
+		controls.keypressed(button)
 	end
 
 	--Send keyboard information to the functions
@@ -87,6 +97,8 @@ function love.draw()
 		gameMenu.draw()
 	elseif gamestate == "options" then
 		options.draw()
+	elseif gamestate == "controls" then
+		controls.draw()
 	end
 end
 

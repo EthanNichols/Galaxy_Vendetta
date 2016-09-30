@@ -64,8 +64,9 @@ function options.mousepressed(x, y, button)
 					playersInGame = playersInGame - 1
 				end
 				v.text = "Players: " .. playersInGame
-			elseif v.text == "Options" then
-				gamestate = "options"
+				players.load(playersInGame)
+			elseif v.text == "Controls" then
+				gamestate = "controls"
 			elseif v.text == "Exit" then
 				gamestate = previousGamestate
 			end
