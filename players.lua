@@ -1,6 +1,8 @@
 
 players = {}
 
+playerControls = {}
+
 local playingPlayers = 0
 local winner = -1
 
@@ -24,9 +26,20 @@ function players.load(playerAmount)
 		local y = love.graphics.getHeight() / 2
 		local rotation = (360 / playerAmount) * player
 		local radius = love.graphics.getHeight() / 7
+		local inKey = ""
+		local outKey = ""
 
 		--Set the player number for each player
 		player = player + 1
+
+		if playerControls[1] ~= nil then
+			for i, v in ipairs(playerControls) do
+				if player == v.playerNum then
+					inKey = v.inKey
+					outKey = v.outKey
+				end
+			end
+		end
 
 		--Put information into a player table
 		table.insert(players, 
@@ -40,10 +53,19 @@ function players.load(playerAmount)
 					radiusChange = 0;
 					rotation = rotation,
 					fillType = "fill",
+					inKey = inKey,
+					outKey = outKey,
 					ring = 1,
 					direction = 1,
 					speed = 1,
 					maxSpeed = 1,})
+	end
+
+	local players = 1
+
+	while players <= playerAmount do
+		playerControls[players] = nil
+		players = players + 1
 	end
 end
 
@@ -146,17 +168,17 @@ function players.keypressed(button)
 
 	--Get information about the players
 	for i, v in ipairs(players) do
+
+		print(v.inKey, v.outKey)
 		--Test for which keyboard button was pressed
 		--Test for one player to move, rather than all of them
 		--Move the players in the direction determined by the ring they're on
-		if button == "z" and
-		v.playerNum == 1 and
+		if v.inKey == button and
 		v.radiusChange == 0 and
 		v.ring ~= 3 then
 			v.ring = v.ring + v.direction
 			v.radiusChange = (love.graphics.getHeight() / 7) * -v.direction
-		elseif button == "x" and
-		v.playerNum == 1 and
+		elseif v.outKey == button and
 		v.radiusChange == 0 and
 		v.ring ~= 1 then
 			v.ring = v.ring - v.direction
@@ -166,6 +188,14 @@ function players.keypressed(button)
 end
 
 function players.reset()
+
+	for i, v in ipairs(players) do
+		table.insert(playerControls,
+					{playerNum = v.playerNum,
+					outKey = v.outKey,
+					inKey = v.inKey})
+	end
+
 	if players[1] ~= nil then
 		while playingPlayers >= 0 do
 			players[playingPlayers] = nil
